@@ -92,10 +92,14 @@ export async function publicMetadata(segments: string[]): Promise<Metadata> {
       tags: ['标签', 'Tags'],
       search: ['搜索', 'Search'],
       about: ['关于', 'About'],
+      rss: ['RSS 订阅', 'RSS subscriptions'],
     };
     title = names[section]?.[en ? 1 : 0] ?? site.title;
-    const page=await db.page.findFirst({where:{...publicWhere(language),slug:section}});
-    if(page){title=page.title;description=page.content.replace(/[#*`>]/g,'').slice(0,160);}
+    const page = await db.page.findFirst({ where: { ...publicWhere(language), slug: section } });
+    if (page) {
+      title = page.title;
+      description = page.content.replace(/[#*`>]/g, '').slice(0, 160);
+    }
   }
   const path = '/' + segments.join('/');
   const opposite = en ? 'zh-CN' : 'en';
@@ -106,7 +110,16 @@ export async function publicMetadata(segments: string[]): Promise<Metadata> {
     title: title === site.title ? site.title : `${title} · ${site.title}`,
     description,
     metadataBase: site.domain ? new URL(site.domain) : undefined,
-    alternates: { canonical: path, languages },
+    alternates: {
+      canonical: path,
+      languages,
+      types: {
+        'application/rss+xml': [
+          { url: `${en ? '/en' : ''}/feed.xml`, title: en ? 'Articles' : '杂谈' },
+          { url: `${en ? '/en' : ''}/works/feed.xml`, title: en ? 'Literary works' : '文学作品' },
+        ],
+      },
+    },
     openGraph: {
       title,
       description,

@@ -15,6 +15,7 @@ const links = [
   ['tags', '标签'],
   ['categories', '分类'],
   ['pages', '页面'],
+  ['about', '关于页面'],
   ['navigation', '导航'],
   ['giscus', 'Giscus 评论'],
   ['settings', '网站设置'],

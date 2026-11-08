@@ -5,6 +5,7 @@ import { currentUser } from '@/lib/auth';
 import { db } from '@/lib/db';
 import { schemas, type Resource } from '@/lib/validation';
 import { canManage } from '@/lib/content';
+import { AboutEditor } from '@/components/admin/about';
 import { getSettings } from '@/lib/settings';
 import { AdminShell } from '@/components/admin/shell';
 import { Login } from '@/components/admin/login';
@@ -118,12 +119,24 @@ export default async function Admin({ params }: { params: Promise<{ segments?: s
         </section>
       </>
     );
-  } else if (!canManage(user.role, section)) {
+  } else if (!canManage(user.role, section === 'about' ? 'pages' : section)) {
     content = (
       <>
         <h1>没有访问权限</h1>
         <p>请联系管理员调整账号角色。</p>
       </>
+    );
+  } else if (section === 'about' && !id) {
+    const pages = await db.page.findMany({
+      where: { slug: 'about', language: { in: ['zh', 'en'] } },
+    });
+    content = (
+      <AboutEditor
+        initial={pages.map((page) => ({
+          ...page,
+          publishedAt: page.publishedAt?.toISOString() ?? null,
+        }))}
+      />
     );
   } else if (section === 'novels' && id) {
     const novel = await db.novel.findUnique({ where: { id } });
@@ -139,7 +152,9 @@ export default async function Admin({ params }: { params: Promise<{ segments?: s
       />
     );
   else if (section === 'media') content = <MediaLibrary />;
-  else if (section === 'repository') content = user.role === 'SUPER_ADMIN' ? <RepositoryManager /> : <p>只有超级管理员可以管理内容仓库。</p>;
+  else if (section === 'repository')
+    content =
+      user.role === 'SUPER_ADMIN' ? <RepositoryManager /> : <p>只有超级管理员可以管理内容仓库。</p>;
   else if (section === 'users') {
     if (user.role !== 'SUPER_ADMIN') content = <p>只有超级管理员可以管理用户。</p>;
     else content = <Users />;

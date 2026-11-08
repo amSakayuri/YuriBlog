@@ -46,7 +46,7 @@ export function Header({
         <Link href={`${prefix}/search`} aria-label={en ? 'Search' : '搜索'}>
           <Search size={18} />
         </Link>
-        <Link href={`${prefix}/feed.xml`} aria-label="RSS">
+        <Link href={`${prefix}/rss`} aria-label={en ? 'RSS subscriptions' : 'RSS 订阅'}>
           <Rss size={17} />
         </Link>
         <Link

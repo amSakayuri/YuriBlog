@@ -732,6 +732,35 @@ export async function PublicSite({
         </Reader>
       );
     }
+  } else if (section === 'rss' && route.length === 1) {
+    content = (
+      <>
+        <h1>{en ? 'RSS subscriptions' : 'RSS 订阅'}</h1>
+        <p className="muted">
+          {en
+            ? 'Add either feed URL to your RSS reader.'
+            : '选择订阅类型，将链接添加到你的 RSS 阅读器。'}
+        </p>
+        <section>
+          <h2>{en ? 'Articles' : '杂谈'}</h2>
+          <p>{en ? 'Technical articles, research and notes.' : '技术文章、研究报告与日常笔记。'}</p>
+          <a href={p('/feed.xml')}>
+            {en ? 'Subscribe to articles' : '订阅杂谈'} · {p('/feed.xml')}
+          </a>
+        </section>
+        <section>
+          <h2>{en ? 'Literary works' : '文学作品'}</h2>
+          <p>
+            {en
+              ? 'Essays, novels and published chapter updates.'
+              : '散文、小说与已发布章节的更新。'}
+          </p>
+          <a href={p('/works/feed.xml')}>
+            {en ? 'Subscribe to literary works' : '订阅文学作品'} · {p('/works/feed.xml')}
+          </a>
+        </section>
+      </>
+    );
   } else if (route.length === 1) {
     const page = await db.page.findFirst({ where: { ...publicWhere(language), slug: section } });
     if (!page && !['about', 'privacy', 'copyright'].includes(section)) notFound();
@@ -772,7 +801,7 @@ export async function PublicSite({
           © {new Date().getFullYear()} {site.author || site.title}
         </span>
         <div>
-          <Link href={p('/feed.xml')}>RSS</Link>
+          <Link href={p('/rss')}>RSS</Link>
           <Link href={p('/privacy')}>{en ? 'Privacy' : '隐私'}</Link>
           <Link href="/admin">{en ? 'Admin' : '管理'}</Link>
         </div>

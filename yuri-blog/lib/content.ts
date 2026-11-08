@@ -1,4 +1,4 @@
-import { Prisma, type Role } from '@prisma/client';
+import { Prisma, type Role, type PrismaClient } from '@prisma/client';
 import { db } from './db';
 import { schemas, type Resource } from './validation';
 import { HttpError } from './auth';
@@ -86,6 +86,7 @@ export async function writeContent(
   input: unknown,
   actorId: string,
   id?: string,
+  store: PrismaClient = db,
 ) {
   const parsed = schemas[resource].parse(input);
   const data: Record<string, unknown> = { ...parsed };
@@ -108,7 +109,7 @@ export async function writeContent(
       ...(id ? { deleteMany: {} } : {}),
       create: [...new Set(tagIds)].map((tagId) => ({ tagId })),
     };
-  return db.$transaction(async (tx) => {
+  return store.$transaction(async (tx) => {
     const previous = id ? await delegate(tx, resource).findUnique({ where: { id } }) : null;
     const record = id
       ? await delegate(tx, resource).update({ where: { id }, data })
