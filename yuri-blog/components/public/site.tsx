@@ -510,7 +510,7 @@ export async function PublicSite({
     ]);
     content = (
       <div className="literary">
-        <h1>{en ? 'Literary works' : '文学作品'}</h1>
+        <h1 className="works-page-title">{en ? 'Literary works' : '文学作品'}</h1>
         <div className="filter-row">
           <Link href="#novels">{en ? 'Novels' : '小说'}</Link>
           <Link href="#essays">{en ? 'Essays' : '散文'}</Link>

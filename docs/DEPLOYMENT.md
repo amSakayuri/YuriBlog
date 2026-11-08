@@ -41,13 +41,13 @@ sh scripts/deploy.sh
 
 脚本先构建，再停止写入、备份已有数据库和图片、执行迁移并启动服务。使用 Caddy 的站点每次加 `--caddy`。
 
-`deploy.sh` 不拉取源码；需要从 GitHub 获取版本并自动重启时使用[自动更新模块](UPDATE.md)。文章、小说和图片保存在持久卷中，不随镜像重建删除。不要执行 `docker compose down -v`。
+`deploy.sh` 不拉取源码；需要从 GitHub 获取版本并重启时手动执行[更新脚本](UPDATE.md)。文章、小说和图片保存在持久卷中，不随镜像重建删除。不要执行 `docker compose down -v`。
 
 ## 日常命令
 
 每次重新登录服务器，先执行：
 
-已启用自动更新的站点，以下 `docker compose --env-file "$YURI_ENV_FILE"` 命令请改用 `sh scripts/manage.sh`，以管理当前成功版本。
+已使用更新脚本的站点，以下 `docker compose --env-file "$YURI_ENV_FILE"` 命令请改用 `sh scripts/manage.sh`，以管理当前成功版本。
 
 ```sh
 cd /opt/yuri-blog

@@ -72,6 +72,7 @@ export function Collection({ resource, novelId }: { resource: Resource; novelId?
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
+  const [importing, setImporting] = useState(false);
   const [selected, setSelected] = useState<string[]>([]);
   const [targetQuery, setTargetQuery] = useState('');
   const [preview, setPreview] = useState('');
@@ -274,23 +275,28 @@ export function Collection({ resource, novelId }: { resource: Resource; novelId?
           </p>
         </div>
         <div className="actions">
-          {resource === 'articles' && (
+          {(['articles', 'essays', 'novels'].includes(resource) ||
+            (resource === 'chapters' && novelId)) && (
             <label className="button button-outline">
-              导入Markdown
+              {importing ? '正在导入…' : '导入Markdown'}
               <input
                 type="file"
                 accept=".md,.markdown,text/markdown"
                 className="sr-only"
+                disabled={importing}
                 onChange={async (event) => {
                   const file = event.currentTarget.files?.[0];
                   event.currentTarget.value = '';
                   if (!file) return;
-                  if (isDirty && !confirm('有未保存的修改，继续导入新文章？')) return;
+                  if (isDirty && !confirm(`有未保存的修改，继续导入新${resourceNames[resource]}？`))
+                    return;
                   setError('');
+                  setImporting(true);
                   try {
                     const body = new FormData();
                     body.append('file', file);
-                    const response = await fetch('/api/admin/articles/import', {
+                    if (novelId) body.append('novelId', novelId);
+                    const response = await fetch(`/api/admin/${resource}/import`, {
                       method: 'POST',
                       body,
                     });
@@ -299,10 +305,16 @@ export function Collection({ resource, novelId }: { resource: Resource; novelId?
                     reset(toForm(article));
                     setCurrent(article);
                     setEditing(true);
-                    setMessage('Markdown已导入草稿，请检查图片链接与元信息后发布');
+                    setMessage(
+                      resource === 'novels'
+                        ? '小说已创建为草稿，正文已保存为首章草稿；请进入章节管理检查后发布'
+                        : 'Markdown已导入草稿，请检查图片链接与元信息后发布',
+                    );
                     await load();
                   } catch (error) {
                     setError((error as Error).message);
+                  } finally {
+                    setImporting(false);
                   }
                 }}
               />

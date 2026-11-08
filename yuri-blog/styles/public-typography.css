@@ -32,7 +32,9 @@
   font-weight: 500;
   line-height: normal;
 }
-.public-main > h1 {
+.public-main > h1,
+.public-main > .literary > .works-page-title {
+  font-family: var(--font-public);
   font-size: var(--type-page-size);
   font-weight: 600;
   line-height: normal;
