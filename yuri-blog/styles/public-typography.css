@@ -1,0 +1,348 @@
+/* Measured against cubk.cn at 1440px and 390px. See docs/TYPOGRAPHY.md. */
+.public-shell {
+  --font-public: 'HarmonyOS Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-public-code:
+    'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, 'HarmonyOS Sans SC',
+    'PingFang SC', 'Microsoft YaHei', monospace;
+  --type-page-size: 28px;
+  --type-detail-size: 32px;
+  --type-detail-leading: 40px;
+  --type-list-size: 18px;
+  --type-list-leading: 28px;
+  --type-prose-size: 15px;
+  --type-prose-leading: 1.7;
+  font-family: var(--font-public);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.public-shell > .site-header > .wordmark {
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: normal;
+  line-height: normal;
+}
+.public-main[data-section='home'] > .literary :is(h2, h3) {
+  font-family: var(--font-public);
+  font-weight: 600;
+}
+.public-shell .site-header nav {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: normal;
+}
+.public-main > h1 {
+  font-size: var(--type-page-size);
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: normal;
+  text-wrap: wrap;
+}
+.public-main > h1 small {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: normal;
+}
+.public-main[data-section='home'],
+.public-main[data-section='articles'][data-detail='true'] {
+  max-width: 720px;
+}
+.public-main[data-section='articles'][data-detail='false'] {
+  max-width: 760px;
+}
+.public-main[data-section='articles'][data-detail='false'] > h1 {
+  margin-bottom: 12px;
+}
+.public-main[data-section='archive'] > h1,
+.public-main[data-section='projects'] > h1 {
+  margin-bottom: 28px;
+}
+.public-main[data-section='tags'] > h1 {
+  margin-bottom: 20px;
+}
+.public-main[data-section='home'] > section + section:not(:has(> .section-heading)) {
+  margin-top: 24px;
+}
+.public-shell .profile-info dt {
+  font-weight: 600;
+  color: var(--foreground);
+}
+.public-main[data-section='articles'][data-detail='false'] .content-list > article {
+  grid-template-columns: 104px 1fr;
+  gap: 48px;
+}
+.public-main > .introduction h1 {
+  font: 600 30px/1.25 var(--font-public);
+  letter-spacing: normal;
+  text-wrap: wrap;
+  margin-bottom: 16px;
+}
+.public-main > .introduction > .lead,
+.public-shell .profile-info {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.7;
+}
+.public-main > section:not(.literary) > h2 {
+  font-size: 22.5px;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: normal;
+  margin-bottom: 16px;
+}
+.public-main .section-heading h2 {
+  font-size: 20px;
+  line-height: normal;
+  letter-spacing: normal;
+}
+.public-main .section-heading > a {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: 0.096px;
+}
+.public-shell .content-list:not(:where(.literary .content-list)) h2 {
+  font-size: var(--type-list-size);
+  font-weight: 600;
+  line-height: var(--type-list-leading);
+  letter-spacing: normal;
+  text-wrap: wrap;
+  margin: 0;
+}
+.public-shell .content-list:not(:where(.literary .content-list)) time {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 28px;
+  padding-top: 0;
+}
+.public-shell .content-list:not(:where(.literary .content-list)) p {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.6;
+  margin: 6px 0 0;
+}
+.public-shell .content-list:not(:where(.literary .content-list)) .tag-row {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: normal;
+  margin-top: 10px;
+}
+.public-main[data-section='home'] > section:not(.literary) .content-list h2 {
+  font-size: 16px;
+  line-height: 24px;
+  padding-inline-end: 112px;
+}
+.public-main[data-section='home'] > section:not(.literary) .content-list > article {
+  display: block;
+  position: relative;
+}
+.public-main[data-section='home'] > section:not(.literary) .content-list time {
+  font-size: 13px;
+  line-height: normal;
+  position: absolute;
+  inset-inline-end: 0;
+  top: 29px;
+}
+.public-main[data-section='home'] > section:not(.literary) .content-list p {
+  margin-top: 4px;
+}
+.public-main[data-section='projects'][data-detail='false'] .content-list h2 {
+  font-size: 24px;
+  line-height: 1.3;
+}
+.public-main[data-section='projects'][data-detail='false'] .content-list p {
+  font-size: 15px;
+  line-height: 1.7;
+}
+.public-shell .tags-index a,
+.public-shell .tags-index span {
+  font-size: 13px;
+  font-weight: 400;
+  line-height: normal;
+}
+.public-shell .search-input {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: normal;
+}
+.public-main[data-section='search'] > .muted {
+  font-size: 14px;
+  line-height: normal;
+}
+.public-main[data-section='archive'] > section > h2 {
+  font-size: 22px;
+  line-height: normal;
+}
+.public-shell .archive-row {
+  font-size: 15px;
+  line-height: 21px;
+}
+.public-shell .archive-row time {
+  font-size: 15px;
+  font-weight: 400;
+}
+.public-shell .archive-row > a {
+  font-weight: 500;
+}
+.public-shell .article-detail > .article-heading h1 {
+  font-size: var(--type-detail-size);
+  font-weight: 700;
+  line-height: var(--type-detail-leading);
+  letter-spacing: normal;
+  text-wrap: wrap;
+  overflow-wrap: anywhere;
+  margin-bottom: 12px;
+}
+.public-shell .article-detail > .article-heading {
+  margin-bottom: 32px;
+}
+.public-shell .article-detail > .article-heading time {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: normal;
+}
+.public-shell .article-detail > .article-heading > .lead {
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.7;
+}
+
+/* Literary templates and the reader keep their independent serif and adjustable scale. */
+.public-shell .prose:not(:where(.literary .prose)) {
+  font-family: var(--font-public);
+  font-size: var(--type-prose-size);
+  font-weight: 400;
+  line-height: var(--type-prose-leading);
+  letter-spacing: normal;
+}
+.public-shell .prose:not(:where(.literary .prose)) p {
+  margin: 0 0 16px;
+}
+.public-shell .prose:not(:where(.literary .prose)) :is(h1, h2, h3, h4, h5, h6) {
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: normal;
+  text-wrap: wrap;
+  margin: 24px 0 16px;
+}
+.public-shell .prose:not(:where(.literary .prose)) :is(h1, h2, h3, h4, h5, h6):first-child {
+  margin-top: 0;
+}
+.public-shell .prose:not(:where(.literary .prose)) h1 {
+  font-size: 30px;
+}
+.public-shell .prose:not(:where(.literary .prose)) h2 {
+  font-size: 22.5px;
+}
+.public-shell .prose:not(:where(.literary .prose)) h3 {
+  font-size: 18.75px;
+}
+.public-shell .prose:not(:where(.literary .prose)) h4 {
+  font-size: 15px;
+}
+.public-shell .prose:not(:where(.literary .prose)) h5 {
+  font-size: 13.125px;
+}
+.public-shell .prose:not(:where(.literary .prose)) h6 {
+  font-size: 12.75px;
+}
+.public-shell .prose:not(:where(.literary .prose)) :is(strong, b, th) {
+  font-weight: 600;
+}
+.public-shell .prose:not(:where(.literary .prose)) :is(ul, ol) {
+  margin: 0 0 16px;
+}
+.public-shell .prose:not(:where(.literary .prose)) li {
+  margin: 0;
+}
+.public-shell .prose:not(:where(.literary .prose)) pre {
+  font-family: var(--font-public-code);
+  font-size: 13.5px;
+  font-weight: 400;
+  line-height: 1.55;
+  letter-spacing: normal;
+}
+.public-shell .prose:not(:where(.literary .prose)) pre code {
+  font: inherit;
+}
+.public-shell .prose:not(:where(.literary .prose)) code:not(pre code) {
+  font-family: var(--font-public-code);
+  font-size: 0.87em;
+  font-weight: 400;
+  line-height: inherit;
+}
+.public-shell .code-toolbar > span {
+  font-family: var(--font-public-code);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 20.4px;
+  letter-spacing: 0.3px;
+}
+.public-shell .copy-code {
+  font-family: var(--font-public);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: normal;
+}
+.public-shell .toc {
+  font-size: 14px;
+}
+.public-shell .toc > p {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: normal;
+}
+.public-shell .toc a,
+.public-shell .mobile-toc a {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+.public-shell .toc a.active,
+.public-shell .mobile-toc a.active {
+  font-weight: 500;
+}
+.public-shell .mobile-toc {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 24px;
+  letter-spacing: 0.496px;
+}
+.public-shell .comments > h2 {
+  font: 600 20px/normal var(--font-public);
+  letter-spacing: normal;
+}
+.public-shell .comments > :is(p, a) {
+  font-size: 14px;
+}
+
+@media (max-width: 600px) {
+  .public-shell {
+    --type-page-size: 24px;
+    --type-detail-size: 24px;
+    --type-detail-leading: 30px;
+    --type-list-size: 17px;
+    --type-list-leading: 26px;
+  }
+  .public-shell .content-list:not(:where(.literary .content-list)) time {
+    font-size: 13px;
+    line-height: 20px;
+  }
+  .public-main[data-section='articles'][data-detail='false'] .content-list > article {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  .public-main[data-section='projects'][data-detail='false'] .content-list h2 {
+    font-size: 19px;
+  }
+  .public-main[data-section='projects'] > h1 {
+    margin-bottom: 20px;
+  }
+}
+@media (min-width: 1350px) {
+  .public-main > .article-detail {
+    margin-left: 0;
+    transform: translateX(-70px);
+  }
+}

@@ -1,0 +1,14 @@
+node_modules
+.next
+.git
+.env
+.env.*
+.local
+backups
+keys
+acceptance-results
+.impeccable
+.idea
+tests
+*.tsbuildinfo
+.deploy.lock

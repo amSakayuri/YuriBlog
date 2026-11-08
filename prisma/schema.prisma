@@ -1,0 +1,331 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  EDITOR
+}
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+  SCHEDULED
+  ARCHIVED
+}
+
+enum NovelStatus {
+  DRAFT
+  ONGOING
+  COMPLETED
+  HIATUS
+}
+
+enum ChapterRelationType {
+  RELATED
+  REFERENCE
+  FORESHADOWING
+  PAYOFF
+  SAME_ARC
+  PARALLEL
+  FLASHBACK
+  ALTERNATE_PERSPECTIVE
+}
+
+model User {
+  id           String     @id @default(cuid())
+  username     String     @unique
+  email        String?    @unique
+  name         String
+  passwordHash String
+  role         Role       @default(EDITOR)
+  active       Boolean    @default(true)
+  createdAt    DateTime   @default(now())
+  sessions     Session[]
+  logs         AuditLog[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([expiresAt])
+}
+
+model LoginAttempt {
+  key     String   @id
+  count   Int      @default(0)
+  resetAt DateTime
+}
+
+model RepositoryState {
+  id           String   @id @default("content")
+  localHash    String?
+  remoteCommit String?
+  updatedAt    DateTime @updatedAt
+}
+
+model Article {
+  id             String        @id @default(cuid())
+  title          String
+  slug           String
+  description    String        @default("")
+  content        String        @default("")
+  cover          String        @default("")
+  language       String        @default("zh")
+  translationKey String?
+  status         ContentStatus @default(DRAFT)
+  publishedAt    DateTime?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  seoTitle       String        @default("")
+  seoDescription String        @default("")
+  ogImage        String        @default("")
+  categoryId     String?
+  category       Category?     @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  tags           ArticleTag[]
+
+  @@unique([language, slug])
+  @@unique([language, translationKey])
+  @@index([status, language, publishedAt])
+}
+
+model Tag {
+  id          String       @id @default(cuid())
+  name        String
+  slug        String       @unique
+  description String       @default("")
+  color       String       @default("")
+  articles    ArticleTag[]
+  novels      NovelTag[]
+  essays      EssayTag[]
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String    @default("")
+  articles    Article[]
+}
+
+model ArticleTag {
+  articleId String
+  tagId     String
+  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  tag       Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([articleId, tagId])
+  @@index([tagId])
+}
+
+model Essay {
+  id              String        @id @default(cuid())
+  title           String
+  slug            String
+  description     String        @default("")
+  content         String        @default("")
+  cover           String        @default("")
+  language        String        @default("zh")
+  translationKey  String?
+  status          ContentStatus @default(DRAFT)
+  publishedAt     DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  seoTitle        String        @default("")
+  seoDescription  String        @default("")
+  ogImage         String        @default("")
+  copyright       String        @default("")
+  commentsEnabled Boolean       @default(false)
+  tags            EssayTag[]
+
+  @@unique([language, slug])
+  @@unique([language, translationKey])
+  @@index([status, language, publishedAt])
+}
+
+model EssayTag {
+  essayId String
+  tagId   String
+  essay   Essay  @relation(fields: [essayId], references: [id], onDelete: Cascade)
+  tag     Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([essayId, tagId])
+  @@index([tagId])
+}
+
+model Novel {
+  id              String         @id @default(cuid())
+  title           String
+  slug            String
+  description     String         @default("")
+  cover           String         @default("")
+  language        String         @default("zh")
+  translationKey  String?
+  status          NovelStatus    @default(DRAFT)
+  commentsEnabled Boolean        @default(false)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  volumes         NovelVolume[]
+  chapters        NovelChapter[]
+  tags            NovelTag[]
+
+  @@unique([language, slug])
+  @@unique([language, translationKey])
+  @@index([status, language])
+}
+
+model NovelTag {
+  novelId String
+  tagId   String
+  novel   Novel  @relation(fields: [novelId], references: [id], onDelete: Cascade)
+  tag     Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([novelId, tagId])
+  @@index([tagId])
+}
+
+model NovelVolume {
+  id          String         @id @default(cuid())
+  novelId     String
+  title       String
+  description String         @default("")
+  order       Int            @default(0)
+  novel       Novel          @relation(fields: [novelId], references: [id], onDelete: Cascade)
+  chapters    NovelChapter[]
+
+  @@unique([id, novelId])
+  @@index([novelId, order])
+}
+
+model NovelChapter {
+  id              String            @id @default(cuid())
+  novelId         String
+  volumeId        String?
+  title           String
+  slug            String
+  summary         String            @default("")
+  content         String            @default("")
+  order           Int               @default(0)
+  status          ContentStatus     @default(DRAFT)
+  commentsEnabled Boolean           @default(false)
+  publishedAt     DateTime?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  novel           Novel             @relation(fields: [novelId], references: [id], onDelete: Cascade)
+  volume          NovelVolume?      @relation(fields: [volumeId, novelId], references: [id, novelId], onDelete: NoAction)
+  outgoing        ChapterRelation[] @relation("Source")
+  incoming        ChapterRelation[] @relation("Target")
+
+  @@unique([novelId, slug])
+  @@unique([id, novelId])
+  @@index([novelId, status, order])
+  @@index([status, publishedAt])
+}
+
+model ChapterRelation {
+  id              String              @id @default(cuid())
+  novelId         String
+  sourceChapterId String
+  targetChapterId String
+  type            ChapterRelationType
+  label           String              @default("")
+  description     String              @default("")
+  source          NovelChapter        @relation("Source", fields: [sourceChapterId, novelId], references: [id, novelId], onDelete: Cascade)
+  target          NovelChapter        @relation("Target", fields: [targetChapterId, novelId], references: [id, novelId], onDelete: Cascade)
+
+  @@unique([sourceChapterId, targetChapterId, type])
+  @@index([targetChapterId])
+}
+
+model Project {
+  id             String        @id @default(cuid())
+  title          String
+  slug           String
+  description    String        @default("")
+  content        String        @default("")
+  cover          String        @default("")
+  language       String        @default("zh")
+  translationKey String?
+  category       String        @default("")
+  techStack      String[]      @default([])
+  screenshots    String[]      @default([])
+  githubUrl      String        @default("")
+  demoUrl        String        @default("")
+  projectStatus  String        @default("")
+  status         ContentStatus @default(DRAFT)
+  publishedAt    DateTime?
+  featured       Boolean       @default(false)
+  order          Int           @default(0)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@unique([language, slug])
+  @@unique([language, translationKey])
+  @@index([status, order])
+}
+
+model MediaAsset {
+  id            String   @id @default(cuid())
+  filename      String
+  mimeType      String
+  size          Int
+  width         Int
+  height        Int
+  storagePath   String   @unique
+  thumbnailPath String
+  alt           String   @default("")
+  createdAt     DateTime @default(now())
+}
+
+model Page {
+  id          String        @id @default(cuid())
+  title       String
+  slug        String
+  language    String        @default("zh")
+  content     String        @default("")
+  status      ContentStatus @default(DRAFT)
+  publishedAt DateTime?
+  updatedAt   DateTime      @updatedAt
+
+  @@unique([language, slug])
+}
+
+model NavigationItem {
+  id       String  @id @default(cuid())
+  title    String
+  titleEn  String  @default("")
+  href     String
+  external Boolean @default(false)
+  visible  Boolean @default(true)
+  order    Int     @default(0)
+}
+
+model SiteSetting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  actorId   String?
+  action    String
+  resource  String
+  targetId  String?
+  result    String
+  createdAt DateTime @default(now())
+  actor     User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+}

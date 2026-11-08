@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Yuri Blog
 
-## Getting Started
+Yuri Blog 是一个可自行部署的个人博客与文学创作平台，将技术写作、小说连载、散文和项目展示整合在一个网站中。内容通过统一后台管理，适合长期维护个人网站、持续发布文章与作品。
 
-First, run the development server:
+## 主要功能
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **技术博客**：Markdown 编辑、文件导入、草稿预览、自动保存和定时发布；支持标签、分类、归档与搜索。
+- **文章阅读**：代码高亮、数学公式、滚动目录、图片放大，以及中英文内容和明暗主题。
+- **文学创作**：小说独立管理作品、卷和章节，支持章节排序、作者配置的章节关系及关系图；散文使用独立展示页面。
+- **小说阅读器**：可调整字号、行距、正文宽度和缩进，支持明亮、深色和护眼主题；阅读进度保存在读者浏览器中。
+- **内容后台**：统一管理文章、作品、项目、图片、标签、分类、页面、导航和网站设置，支持管理员与编辑权限。
+- **评论与订阅**：使用 Giscus / GitHub Discussions 管理评论，提供 RSS、Sitemap 和页面 SEO 信息。
+- **可选仓库同步**：通过 SSH Deploy Key 将内容与图片保存到 GitHub 仓库，支持手动推送、拉取预览和自动推送。
+
+## 使用优势
+
+**写作与运维分开。** 日常通过后台编辑和发布内容，无需修改源码或重新构建网站；也可以上传已有 Markdown 文件，整理后发布。
+
+**技术内容与文学作品各有合适的体验。** 博客提供代码、公式和目录，小说拥有独立的卷章结构与阅读器，适合同时经营技术写作和文学创作。
+
+**数据由自己管理。** 文章、小说、账户和网站设置保存在 PostgreSQL，图片保存在持久化目录。Docker 更新程序时保留数据卷，并提供数据库与图片的备份恢复脚本；评论由 GitHub Discussions 单独保存。
+
+**按需配置外部服务。** 基础写作和发布不依赖 GitHub 登录。评论与内容仓库同步分别配置，源码部署和内容同步也相互独立。
+
+## 部署与使用
+
+项目采用 Next.js、React、TypeScript、Tailwind CSS、PostgreSQL 和 Prisma，提供 Docker Compose 及自动部署脚本。支持宝塔/Nginx 反向代理，也可使用 Caddy 管理 HTTPS。
+
+上传完整项目到服务器、安装 Docker Compose 并配置域名后，首次部署可执行：
+
+```sh
+cd /opt/yuri-blog
+sh scripts/deploy.sh --init --domain blog.amsakayuri.cn
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+默认沿用宝塔/Nginx，需要另外配置 HTTPS 和到 `127.0.0.1:3000` 的反向代理。使用其他域名时替换命令中的域名，详细步骤见[部署与更新](docs/DEPLOYMENT.md)。
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+首次使用点击“添加管理员”；已有管理员后使用用户名和密码登录。Giscus 与内容仓库同步需分别配置后启用。
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 使用指南
 
-## Learn More
+| 需要做什么 | 指南 |
+| --- | --- |
+| 登录、管理内容与账户 | [后台使用](docs/ADMIN_GUIDE.md) |
+| 写文章、导入 Markdown、发布小说 | [内容创作](docs/CONTENT_GUIDE.md) |
+| 部署、更新网站与排查访问问题 | [部署与更新](docs/DEPLOYMENT.md) |
+| 备份或恢复文章和图片 | [备份恢复](docs/BACKUP_RESTORE.md) |
+| 开启文章评论 | [Giscus 评论](docs/GISCUS_SETUP.md) |
+| 将内容与图片保存到 GitHub | [内容仓库同步](docs/REPOSITORY_SYNC.md) |
+| 字体版权与来源 | [字体声明](docs/FONT_NOTICES.md) |
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+服务器命令在外层项目目录执行，通常为 `/opt/yuri-blog`。日常发布内容只需使用后台。

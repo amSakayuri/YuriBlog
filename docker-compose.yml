@@ -1,0 +1,86 @@
+name: yuri-blog
+services:
+  postgres:
+    image: postgres:17-bookworm
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?required}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?required}
+      POSTGRES_DB: ${POSTGRES_DB:?required}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+  migrate:
+    build:
+      context: .
+      target: tools
+    command: [pnpm, exec, prisma, migrate, deploy]
+    env_file: ${YURI_ENV_FILE:-.env}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: 'no'
+  web:
+    build:
+      context: .
+      target: web
+    restart: unless-stopped
+    env_file: ${YURI_ENV_FILE:-.env}
+    environment:
+      UPLOAD_DIR: /app/data/uploads
+    ports:
+      - '127.0.0.1:${WEB_PORT:-3000}:3000'
+    volumes:
+      - uploads:/app/data/uploads
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test:
+        [
+          CMD,
+          node,
+          -e,
+          "fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+  worker:
+    build:
+      context: .
+      target: tools
+    env_file: ${YURI_ENV_FILE:-.env}
+    restart: unless-stopped
+    environment:
+      INTERNAL_APP_URL: http://web:3000
+    volumes:
+      - uploads:/app/data/uploads
+    depends_on:
+      web:
+        condition: service_healthy
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+      - '443:443/udp'
+    environment:
+      SITE_HOST: ${SITE_HOST:?required}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      web:
+        condition: service_healthy
+volumes:
+  postgres_data:
+  uploads:
+  caddy_data:
+  caddy_config:

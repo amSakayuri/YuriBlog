@@ -1,41 +1,71 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-/.pnp
+# Dependencies
+node_modules/
+.pnp
 .pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
+.pnpm-store/
+.yarn/
 
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-
-# env files (can opt-in for committing if needed)
-.env*
-
-# vercel
-.vercel
-
-# typescript
+# Build output and generated types
+.next/
+out/
+build/
+dist/
 *.tsbuildinfo
 next-env.d.ts
+.vercel/
+
+# Tests and development-only scripts/workflows
+/tests/
+coverage/
+test-results/
+playwright-report/
+__tests__/
+*.test.*
+*.spec.*
+/scripts/dev-db.ts
+/scripts/acceptance-fixture.ts
+/scripts/production-acceptance.sh
+/.github/workflows/ci.yml
+/.github/workflows/production-acceptance.yml
+
+# Credentials and local persistent data
+.env
+.env.*
+!/.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+keys/
+.ssh/
+.local/
+backups/
+acceptance-results/
+/data/
+/uploads/
+.deploy.lock
+
+# Editor, formatting and local design configuration
+.idea/
+.vscode/
+.impeccable/
+.prettierignore
+.prettierrc*
+prettier.config.*
+eslint.config.*
+.eslintrc*
+.eslintignore
+components.json
+/PROJECT_STATUS.md
+
+# Temporary files and logs
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.swp
+
+# Keep source, docs, lockfiles and production build/deployment configuration.
+# tsconfig.json, next.config.mjs and postcss.config.mjs are required by Docker.

@@ -1,0 +1,28 @@
+name: Deploy source
+on:
+  workflow_dispatch:
+    inputs:
+      revision:
+        description: Reviewed Git commit SHA to deploy
+        required: true
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy reviewed source via SSH
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          HOST: ${{ secrets.DEPLOY_HOST }}
+          USER: ${{ secrets.DEPLOY_USER }}
+          REVISION: ${{ inputs.revision }}
+        run: |
+          [[ "$REVISION" =~ ^[0-9a-f]{40}$ ]] || exit 1
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy
+          chmod 600 ~/.ssh/deploy
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          ssh -i ~/.ssh/deploy "$USER@$HOST" "cd /opt/yuri-blog && export YURI_ENV_FILE=.env.production && git fetch origin && sh scripts/backup-db.sh && git checkout --detach '$REVISION' && sh scripts/production-preflight.sh && docker compose --env-file .env.production up -d postgres && docker compose --env-file .env.production stop web worker && docker compose --env-file .env.production run --rm --no-deps migrate && docker compose --env-file .env.production up -d --build --wait web worker caddy"

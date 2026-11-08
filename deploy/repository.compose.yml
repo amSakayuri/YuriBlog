@@ -1,0 +1,9 @@
+services:
+  web:
+    volumes:
+      - ${CONTENT_REPO_KEY_SOURCE:?required}:/run/secrets/content_deploy_key:ro
+      - ${CONTENT_REPO_HOSTS_SOURCE:?required}:/run/secrets/github_known_hosts:ro
+  worker:
+    volumes:
+      - ${CONTENT_REPO_KEY_SOURCE:?required}:/run/secrets/content_deploy_key:ro
+      - ${CONTENT_REPO_HOSTS_SOURCE:?required}:/run/secrets/github_known_hosts:ro

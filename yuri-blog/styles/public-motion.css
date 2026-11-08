@@ -1,0 +1,135 @@
+/* Timings measured from cubk.cn; no scroll-driven hiding of readable content. */
+::view-transition {
+  background: var(--background);
+}
+::view-transition-old(root) {
+  animation: yuri-out 90ms cubic-bezier(0.3, 0, 0.8, 0.15) both;
+}
+::view-transition-new(root) {
+  animation: yuri-in-scale 210ms 90ms cubic-bezier(0.05, 0.7, 0.1, 1) both;
+}
+html[data-page-transition='forward']::view-transition-old(root) {
+  animation:
+    yuri-out 90ms cubic-bezier(0.3, 0, 0.8, 0.15) both,
+    yuri-to-left 300ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+html[data-page-transition='forward']::view-transition-new(root) {
+  animation:
+    yuri-in 210ms 90ms cubic-bezier(0.05, 0.7, 0.1, 1) both,
+    yuri-from-right 300ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+html[data-page-transition='backward']::view-transition-old(root) {
+  animation:
+    yuri-out 90ms cubic-bezier(0.3, 0, 0.8, 0.15) both,
+    yuri-to-right 300ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+html[data-page-transition='backward']::view-transition-new(root) {
+  animation:
+    yuri-in 210ms 90ms cubic-bezier(0.05, 0.7, 0.1, 1) both,
+    yuri-from-left 300ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+@keyframes yuri-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes yuri-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes yuri-in-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+}
+@keyframes yuri-to-left {
+  to {
+    transform: translateX(-12px);
+  }
+}
+@keyframes yuri-from-right {
+  from {
+    transform: translateX(12px);
+  }
+}
+@keyframes yuri-to-right {
+  to {
+    transform: translateX(12px);
+  }
+}
+@keyframes yuri-from-left {
+  from {
+    transform: translateX(-12px);
+  }
+}
+
+.public-shell .site-header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: var(--background);
+  view-transition-name: site-header;
+}
+.public-shell .site-header nav a {
+  border-radius: 18px;
+  padding: 8px 10px;
+  transition:
+    background-color 150ms,
+    color 150ms;
+}
+.public-shell .site-header nav {
+  gap: 2px;
+}
+.public-shell .site-header nav a:hover {
+  background: color-mix(in srgb, var(--foreground) 8%, transparent);
+}
+.public-shell :is(.button, .copy-code, .header-tools > a) {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition:
+    background-color 150ms,
+    color 150ms;
+}
+.public-shell .header-tools > :is(a, button) {
+  border-radius: 50%;
+}
+.public-shell .header-tools > a:hover {
+  background: color-mix(in srgb, var(--foreground) 8%, transparent);
+}
+.public-shell :is(.button:not(.button-default), .copy-code, .header-tools > a):active {
+  background: color-mix(in srgb, var(--foreground) 12%, var(--background));
+}
+.control-ripple {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 50%;
+  background: currentColor;
+}
+.public-shell .toc a {
+  transition:
+    color 200ms,
+    border-color 200ms,
+    background-color 200ms;
+}
+.public-shell .prose :is(h1, h2, h3, h4, h5, h6) {
+  scroll-margin-top: 110px;
+}
+@media (max-width: 600px) {
+  .public-shell .site-header {
+    position: static;
+    view-transition-name: none;
+  }
+  .public-shell .prose :is(h1, h2, h3, h4, h5, h6) {
+    scroll-margin-top: 24px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
