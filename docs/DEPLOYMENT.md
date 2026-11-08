@@ -41,11 +41,13 @@ sh scripts/deploy.sh
 
 脚本先构建，再停止写入、备份已有数据库和图片、执行迁移并启动服务。使用 Caddy 的站点每次加 `--caddy`。
 
-脚本不自动拉取 GitHub 源码。文章、小说和图片保存在持久卷中，不随镜像重建删除。不要执行 `docker compose down -v`。
+`deploy.sh` 不拉取源码；需要从 GitHub 获取版本并自动重启时使用[自动更新模块](UPDATE.md)。文章、小说和图片保存在持久卷中，不随镜像重建删除。不要执行 `docker compose down -v`。
 
 ## 日常命令
 
 每次重新登录服务器，先执行：
+
+已启用自动更新的站点，以下 `docker compose --env-file "$YURI_ENV_FILE"` 命令请改用 `sh scripts/manage.sh`，以管理当前成功版本。
 
 ```sh
 cd /opt/yuri-blog
@@ -68,14 +70,14 @@ docker compose --env-file "$YURI_ENV_FILE" up -d --force-recreate web worker
 
 ## 常见问题
 
-| 现象 | 处理 |
-| --- | --- |
-| 80/443 已占用 | 宝塔用户使用默认模式，不加 `--caddy` |
-| Nginx 404 | 确认站点绑定博客子域名，代理目录为 `/` |
-| Nginx 502 | 检查 web 容器状态和迁移日志 |
-| 请求来源不匹配 | 访问 HTTPS；容器 APP_ORIGIN 必须与浏览器来源完全一致，无末尾斜杠 |
-| 登录后返回登录页 | 确认使用有效 HTTPS 证书，生产登录 Cookie 需要 HTTPS |
-| 上传提示 413 | 在代理中适当调大请求体限制，批量上传建议 110 MB |
+| 现象             | 处理                                                             |
+| ---------------- | ---------------------------------------------------------------- |
+| 80/443 已占用    | 宝塔用户使用默认模式，不加 `--caddy`                             |
+| Nginx 404        | 确认站点绑定博客子域名，代理目录为 `/`                           |
+| Nginx 502        | 检查 web 容器状态和迁移日志                                      |
+| 请求来源不匹配   | 访问 HTTPS；容器 APP_ORIGIN 必须与浏览器来源完全一致，无末尾斜杠 |
+| 登录后返回登录页 | 确认使用有效 HTTPS 证书，生产登录 Cookie 需要 HTTPS              |
+| 上传提示 413     | 在代理中适当调大请求体限制，批量上传建议 110 MB                  |
 
 容器检查：`curl -fsS http://127.0.0.1:3000/api/health`，正常返回 `{"ok":true}`。
 

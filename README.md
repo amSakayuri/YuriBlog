@@ -11,6 +11,7 @@ Yuri Blog 是一个可自行部署的个人博客与文学创作平台，将技�
 - **内容后台**：统一管理文章、作品、项目、图片、标签、分类、页面、导航和网站设置，支持管理员与编辑权限。
 - **评论与订阅**：使用 Giscus / GitHub Discussions 管理评论，提供 RSS、Sitemap 和页面 SEO 信息。
 - **可选仓库同步**：通过 SSH Deploy Key 将内容与图片保存到 GitHub 仓库，支持手动推送、拉取预览和自动推送。
+- **程序自动更新**：从指定 GitHub 源码仓库获取新版本，备份后迁移并重启服务；可启用每小时检查，复用现有数据库和图片卷。
 
 ## 使用优势
 
@@ -39,14 +40,15 @@ sh scripts/deploy.sh --init --domain blog.amsakayuri.cn
 
 ## 使用指南
 
-| 需要做什么 | 指南 |
-| --- | --- |
-| 登录、管理内容与账户 | [后台使用](docs/ADMIN_GUIDE.md) |
-| 写文章、导入 Markdown、发布小说 | [内容创作](docs/CONTENT_GUIDE.md) |
-| 部署、更新网站与排查访问问题 | [部署与更新](docs/DEPLOYMENT.md) |
-| 备份或恢复文章和图片 | [备份恢复](docs/BACKUP_RESTORE.md) |
-| 开启文章评论 | [Giscus 评论](docs/GISCUS_SETUP.md) |
-| 将内容与图片保存到 GitHub | [内容仓库同步](docs/REPOSITORY_SYNC.md) |
-| 字体版权与来源 | [字体声明](docs/FONT_NOTICES.md) |
+| 需要做什么                      | 指南                                    |
+| ------------------------------- | --------------------------------------- |
+| 登录、管理内容与账户            | [后台使用](docs/ADMIN_GUIDE.md)         |
+| 写文章、导入 Markdown、发布小说 | [内容创作](docs/CONTENT_GUIDE.md)       |
+| 部署、更新网站与排查访问问题    | [部署与更新](docs/DEPLOYMENT.md)        |
+| 从 GitHub 自动更新并重启服务    | [自动更新](docs/UPDATE.md)              |
+| 备份或恢复文章和图片            | [备份恢复](docs/BACKUP_RESTORE.md)      |
+| 开启文章评论                    | [Giscus 评论](docs/GISCUS_SETUP.md)     |
+| 将内容与图片保存到 GitHub       | [内容仓库同步](docs/REPOSITORY_SYNC.md) |
+| 字体版权与来源                  | [字体声明](docs/FONT_NOTICES.md)        |
 
 服务器命令在外层项目目录执行，通常为 `/opt/yuri-blog`。日常发布内容只需使用后台。

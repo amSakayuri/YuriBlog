@@ -46,6 +46,7 @@ acceptance-results/
 /data/
 /uploads/
 .deploy.lock
+.updates/
 
 # Editor, formatting and local design configuration
 .idea/

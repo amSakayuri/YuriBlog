@@ -12,3 +12,4 @@ acceptance-results
 tests
 *.tsbuildinfo
 .deploy.lock
+.updates
